@@ -44,7 +44,7 @@ Dein `claude` bzw. `codex` muss **eingeloggt** sein: einmal `claude` starten und
 ### 1.2 Omnigent installieren
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/omnigent-ai/omnigent/main/scripts/install_oss.sh | sh -s -- --no-databricks
+curl -fsSL https://omnigent.ai/install.sh | sh
 ```
 
 Danach ein **neues Terminal** öffnen und prüfen:
@@ -79,6 +79,7 @@ Beim ersten Start fragt Omnigent ggf. nach deinem Anbieter – wähle dein Abo.
 | „Not logged in“ | `claude` starten → `/login` bzw. `codex login` |
 | Windows | `omni claude` geht dort nicht. Nimm `omnigent run --harness claude-sdk` (oder `--harness codex`) – Übung 2 funktioniert normal |
 | `omni` nicht gefunden | neues Terminal öffnen; sonst `~/.local/bin` in den `PATH` |
+| Installer bricht bei der Databricks-CLI ab oder lädt sehr lange | ohne Databricks installieren: `curl -fsSL https://omnigent.ai/install.sh \| sh -s -- --no-databricks` |
 
 ---
 
