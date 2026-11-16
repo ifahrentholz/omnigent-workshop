@@ -1,0 +1,53 @@
+# Lösung Übung 3 – Policy + Sub-Agent mit eigenem Skill
+#
+# Starten (im Ordner demo-app/):
+#   omni run ../loesungen/uebung-3/kassen-agent
+#
+# Ordnerstruktur:
+#   kassen-agent/
+#   ├── config.yaml                          ← dieser Agent
+#   ├── skills/kassen-check/SKILL.md         ← Skill NUR für diesen Agent
+#   └── agents/reviewer/
+#       ├── config.yaml                      ← Sub-Agent
+#       └── skills/test-luecken/SKILL.md     ← Skill NUR für den Reviewer
+
+spec_version: 1
+name: kassen-agent
+description: Kassen-Agent mit Schreibschutz-Policy und einem Reviewer als Sub-Agent.
+
+executor:
+  type: omnigent
+  config:
+    harness: claude-sdk        # oder: codex
+
+skills: none
+
+prompt: |
+  Du bist der Kassen-Agent für die Mini-Kasse in diesem Repo.
+  Antworte knapp und auf Deutsch.
+  Wenn eine Aufgabe zu einem deiner Skills passt, lade den Skill und folge ihm.
+
+  Du hast einen Sub-Agenten `reviewer`. Er ist Spezialist für Testlücken und
+  hat dafür eigene Skills, die du selbst nicht hast. Wenn nach Testlücken,
+  fehlenden Tests oder einem Review der Tests gefragt wird, beauftrage ihn
+  mit `sys_session_send` (agent: "reviewer") und gib sein Ergebnis wieder.
+
+os_env:
+  type: caller_process
+  cwd: .
+  sandbox:
+    type: none
+
+# Policies stehen in einem Agent-Ordner unter guardrails.policies.
+# (Ein Top-Level-Block "policies:" wird hier ohne Fehlermeldung ignoriert!)
+guardrails:
+  policies:
+    nur_lesen:
+      type: function
+      on: [tool_call]
+      function:
+        path: omnigent.policies.builtins.orchestration.read_only_os
+
+tools:
+  agents:
+    - reviewer

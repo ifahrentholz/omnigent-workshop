@@ -1,0 +1,39 @@
+# Übung 2 – dein eigener Agent
+#
+# Starten (im Ordner demo-app/):
+#   omni run agenten/kassen-agent
+#
+# Deine Aufgaben stehen als TODO in dieser Datei und in der README.
+
+spec_version: 1
+name: kassen-agent
+description: Hilft beim Arbeiten an der Mini-Kasse und bringt eigene Skills mit.
+
+executor:
+  type: omnigent
+  config:
+    # TODO 1: Wähle deinen Harness – genau eine Zeile aktiv lassen.
+    harness: claude-sdk        # Claude-Code-Abo
+    # harness: codex           # Codex- / ChatGPT-Abo
+
+# TODO 3: Entferne das "#" vor der nächsten Zeile. Dann sieht der Agent NUR
+# seine eigenen Skills aus ./skills/ – nicht deine globalen aus ~/.claude/skills.
+# skills: none
+
+prompt: |
+  Du bist der Kassen-Agent für die Mini-Kasse in diesem Repo.
+  Antworte knapp und auf Deutsch.
+  Wenn eine Aufgabe zu einem deiner Skills passt, lade den Skill und folge ihm.
+
+# Datei- und Shell-Zugriff im aktuellen Ordner (demo-app/).
+# sandbox: none, weil die macOS-Sandbox den Abo-Login von Claude blockiert.
+os_env:
+  type: caller_process
+  cwd: .
+  sandbox:
+    type: none
+
+# TODO 2: Lege deinen ersten Skill an:
+#   agenten/kassen-agent/skills/kassen-check/SKILL.md
+# Vorlage: siehe README, Übung 2. Ein Eintrag hier im YAML ist NICHT nötig –
+# alles unter ./skills/<name>/SKILL.md wird automatisch gefunden.

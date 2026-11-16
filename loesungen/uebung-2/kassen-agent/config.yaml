@@ -1,0 +1,27 @@
+# Lösung Übung 2 – eigener Agent mit eigenem Skill
+#
+# Starten (im Ordner demo-app/):
+#   omni run ../loesungen/uebung-2/kassen-agent
+
+spec_version: 1
+name: kassen-agent
+description: Hilft beim Arbeiten an der Mini-Kasse und bringt eigene Skills mit.
+
+executor:
+  type: omnigent
+  config:
+    harness: claude-sdk        # oder: codex
+
+# Nur die eigenen Skills aus ./skills/ – keine globalen aus ~/.claude/skills.
+skills: none
+
+prompt: |
+  Du bist der Kassen-Agent für die Mini-Kasse in diesem Repo.
+  Antworte knapp und auf Deutsch.
+  Wenn eine Aufgabe zu einem deiner Skills passt, lade den Skill und folge ihm.
+
+os_env:
+  type: caller_process
+  cwd: .
+  sandbox:
+    type: none
