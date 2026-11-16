@@ -1,0 +1,27 @@
+# Solution exercise 2 – your own agent with its own skill
+#
+# Start it (inside demo-app/):
+#   omni run ../solutions/exercise-2/checkout-agent
+
+spec_version: 1
+name: checkout-agent
+description: Helps working on the mini checkout and brings its own skills.
+
+executor:
+  type: omnigent
+  config:
+    harness: claude-sdk        # or: codex
+
+# Only its own skills from ./skills/ – no global ones from ~/.claude/skills.
+skills: none
+
+prompt: |
+  You are the checkout agent for the mini checkout in this repo.
+  Answer concisely, in the language the user writes in.
+  If a task matches one of your skills, load the skill and follow it.
+
+os_env:
+  type: caller_process
+  cwd: .
+  sandbox:
+    type: none

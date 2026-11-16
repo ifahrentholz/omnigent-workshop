@@ -1,19 +1,19 @@
-"""Mini-Kasse: Preisberechnung fuer den Omnigent-Workshop.
+"""Mini checkout: price calculation for the Omnigent workshop.
 
-Alle Betraege sind Integer-Cent, damit keine Float-Rundungsfehler entstehen.
+All amounts are integer cents so there are no floating-point rounding errors.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 
-# MwSt.-Saetze in Prozent.
+# VAT rates in percent.
 VAT_RATES: dict[str, int] = {"standard": 19, "reduced": 7}
 
 
 @dataclass(frozen=True)
 class Item:
-    """Eine Warenkorb-Position. ``unit_price_cents`` ist der Netto-Stueckpreis."""
+    """A cart line. ``unit_price_cents`` is the net price per unit."""
 
     name: str
     unit_price_cents: int
@@ -22,11 +22,11 @@ class Item:
 
     def __post_init__(self) -> None:
         if self.unit_price_cents < 0:
-            raise ValueError(f"{self.name}: Preis darf nicht negativ sein")
+            raise ValueError(f"{self.name}: price must not be negative")
         if self.quantity < 1:
-            raise ValueError(f"{self.name}: Menge muss mindestens 1 sein")
+            raise ValueError(f"{self.name}: quantity must be at least 1")
         if self.vat not in VAT_RATES:
-            raise ValueError(f"{self.name}: unbekannter MwSt.-Satz {self.vat!r}")
+            raise ValueError(f"{self.name}: unknown VAT rate {self.vat!r}")
 
 
 @dataclass(frozen=True)
@@ -40,7 +40,7 @@ class Total:
 
 
 def round_half_up_div(numerator: int, denominator: int) -> int:
-    """Kaufmaennisch gerundete Ganzzahl-Division (0,5 rundet auf)."""
+    """Integer division rounded half up (0.5 rounds up)."""
     return (2 * numerator + denominator) // (2 * denominator)
 
 
@@ -49,10 +49,10 @@ def line_net_cents(item: Item) -> int:
 
 
 def cart_total(items: list[Item]) -> Total:
-    """Summiert Netto und MwSt. eines Warenkorbs.
+    """Sum up net and VAT of a cart.
 
-    Die MwSt. wird je Steuersatz auf die Netto-Summe dieses Satzes berechnet
-    (nicht je Position), so wie es auf einer Rechnung ausgewiesen wird.
+    VAT is computed per rate on that rate's net subtotal (not per line),
+    the way it is shown on an invoice.
     """
     net_by_rate: dict[str, int] = {}
     for item in items:
@@ -67,7 +67,7 @@ def cart_total(items: list[Item]) -> Total:
 
 
 def format_eur(cents: int) -> str:
-    """1234 -> '12,34 EUR'"""
+    """1234 -> '12.34 EUR'"""
     sign = "-" if cents < 0 else ""
     cents = abs(cents)
-    return f"{sign}{cents // 100},{cents % 100:02d} EUR"
+    return f"{sign}{cents // 100}.{cents % 100:02d} EUR"

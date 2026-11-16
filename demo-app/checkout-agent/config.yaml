@@ -1,0 +1,39 @@
+# Exercise 2 – your own agent
+#
+# Start it (inside demo-app/):
+#   omni run checkout-agent
+#
+# Your tasks are the TODOs in this file and in the README.
+
+spec_version: 1
+name: checkout-agent
+description: Helps working on the mini checkout and brings its own skills.
+
+executor:
+  type: omnigent
+  config:
+    # TODO 1: Pick your harness – keep exactly one line active.
+    harness: claude-sdk        # Claude Code subscription
+    # harness: codex           # Codex / ChatGPT subscription
+
+# TODO 3: Remove the "#" in front of the next line. Then the agent sees ONLY
+# its own skills from ./skills/ – not your global ones from ~/.claude/skills.
+# skills: none
+
+prompt: |
+  You are the checkout agent for the mini checkout in this repo.
+  Answer concisely, in the language the user writes in.
+  If a task matches one of your skills, load the skill and follow it.
+
+# File and shell access in the current folder (demo-app/).
+# sandbox: none, because the macOS sandbox blocks Claude's subscription login.
+os_env:
+  type: caller_process
+  cwd: .
+  sandbox:
+    type: none
+
+# TODO 2: Create your first skill:
+#   checkout-agent/skills/checkout-check/SKILL.md
+# Template: see README, exercise 2. No entry in this YAML is needed –
+# everything under ./skills/<name>/SKILL.md is discovered automatically.

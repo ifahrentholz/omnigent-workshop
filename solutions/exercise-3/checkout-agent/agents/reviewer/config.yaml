@@ -1,0 +1,30 @@
+spec_version: 1
+name: reviewer
+description: Finds test gaps in the mini checkout. Reads only, never changes anything.
+
+executor:
+  type: omnigent
+  config:
+    harness: claude-sdk        # If you have both subscriptions: "codex" → review by a different vendor
+
+# The sub-agent also sees only its own skills from ./skills/.
+skills: none
+
+prompt: |
+  You are a strict test reviewer for the mini checkout.
+  Answer concisely, in the language the request is written in. You never change files.
+  If a task matches one of your skills, load the skill and follow it.
+
+os_env:
+  type: caller_process
+  cwd: .
+  sandbox:
+    type: none
+
+guardrails:
+  policies:
+    read_only:
+      type: function
+      on: [tool_call]
+      function:
+        path: omnigent.policies.builtins.orchestration.read_only_os

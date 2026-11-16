@@ -1,25 +1,25 @@
-# KASSE-42: Rabattcodes im Warenkorb
+# SHOP-42: Discount codes in the cart
 
-**Als** Shop-Betreiber **moechte ich** Rabattcodes anbieten, **damit** wir Aktionen fahren koennen.
+**As** a shop owner **I want** to offer discount codes **so that** we can run promotions.
 
-## Anforderungen
+## Requirements
 
-`cart_total(items, code=None)` bekommt einen optionalen Rabattcode.
+`cart_total(items, code=None)` takes an optional discount code.
 
-| Code | Wirkung |
+| Code | Effect |
 |---|---|
-| `WORKSHOP10` | 10 % Rabatt auf jede Position (auf den Netto-Betrag, vor MwSt.) |
-| `FIX500` | 5,00 EUR Abzug von der Netto-Summe |
+| `WORKSHOP10` | 10 % off every line (on the net amount, before VAT) |
+| `FIX500` | 5.00 EUR off the net total |
 
-## Akzeptanzkriterien
+## Acceptance criteria
 
-1. Codes sind case-insensitive (`workshop10` funktioniert).
-2. Unbekannter Code -> `ValueError` mit verstaendlicher Meldung.
-3. Rabatte werden **vor** der MwSt. abgezogen; die MwSt. wird auf den rabattierten Netto-Betrag berechnet.
-4. `FIX500` wird anteilig (nach Netto-Anteil) auf die MwSt.-Saetze verteilt. Ein Rest-Cent aus der Aufteilung landet beim Satz mit dem groessten Netto-Anteil.
-5. Die Netto-Summe faellt nie unter 0 (Warenkorb fuer 3,00 EUR + `FIX500` = 0,00 EUR).
-6. `Total` bekommt ein Feld `discount_cents` (Netto-Rabatt, Default 0).
-7. Alles in Integer-Cent, kaufmaennisch gerundet (`round_half_up_div`).
-8. Bestehende Tests bleiben gruen; neue Tests decken jedes Kriterium ab.
+1. Codes are case-insensitive (`workshop10` works).
+2. Unknown code -> `ValueError` with a clear message.
+3. Discounts are applied **before** VAT; VAT is computed on the discounted net amount.
+4. `FIX500` is split across the VAT rates in proportion to their net share. A leftover cent from the split goes to the rate with the largest net share.
+5. The net total never drops below 0 (a 3.00 EUR cart + `FIX500` = 0.00 EUR).
+6. `Total` gets a field `discount_cents` (net discount, default 0).
+7. Everything in integer cents, rounded half up (`round_half_up_div`).
+8. Existing tests stay green; new tests cover every criterion.
 
 Tests: `python3 -m unittest -v`

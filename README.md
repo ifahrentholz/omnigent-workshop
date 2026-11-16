@@ -1,220 +1,222 @@
-# Omnigent Workshop – Übungen
+# Omnigent Workshop – Exercises
+
+🇬🇧 English · [🇩🇪 Deutsch](README.de.md)
 
 ```bash
 git clone https://github.com/ifahrentholz/omnigent-workshop.git
 cd omnigent-workshop
 ```
 
-Drei Übungen, ca. 50 Minuten. Du arbeitest mit deinem eigenen **Claude-Code-** oder **Codex-Abo**.
-Wo `claude` steht, geht auch `codex`.
+Three exercises, about 50 minutes. You work with your own **Claude Code** or **Codex subscription**.
+Wherever it says `claude`, `codex` works too.
 
-| Übung | Was du am Ende hast | Zeit |
+| Exercise | What you have at the end | Time |
 |---|---|---|
-| 1 | Omnigent läuft, dein Claude Code / Codex als Session im Terminal **und** im Browser | 25 Min |
-| 2 | Ein eigener Agent in YAML mit **eigenem Skill** – unabhängig von deinen globalen Skills | 25 Min |
-| 3 | Bonus: Policy, Sub-Agent mit eigenem Skill, zweiter Anbieter | für Schnelle |
+| 1 | Omnigent is running, your Claude Code / Codex as a session in the terminal **and** in the browser | 25 min |
+| 2 | Your own agent in YAML with **its own skill** – independent of your global skills | 25 min |
+| 3 | Bonus: policy, sub-agent with its own skill, second vendor | for fast finishers |
 
 ```
 omnigent-workshop/
-├── demo-app/                       ← hier arbeitest du (Mini-Kasse in Python)
-│   ├── kasse/pricing.py
+├── demo-app/                       ← you work here (mini checkout in Python)
+│   ├── checkout/pricing.py
 │   ├── tests/
-│   └── agenten/kassen-agent/       ← Übung 2: dein Agent (Starter mit TODOs)
-└── loesungen/                      ← zum Spicken oder Aufholen
-    ├── uebung-2/kassen-agent/
-    └── uebung-3/kassen-agent/
+│   └── checkout-agent/             ← exercise 2: your agent (starter with TODOs)
+└── solutions/                      ← to peek or catch up
+    ├── exercise-2/checkout-agent/
+    └── exercise-3/checkout-agent/
 ```
 
 ---
 
-## Übung 1 – Omnigent einrichten (25 Min)
+## Exercise 1 – Set up Omnigent (25 min)
 
-### 1.1 Voraussetzungen prüfen
+### 1.1 Check the prerequisites
 
 ```bash
 git --version
-python3 --version        # 3.10 oder neuer (für die Tests der Demo-App)
-node --version           # 22 oder neuer
+python3 --version        # 3.10 or newer (for the demo app's tests)
+node --version           # 22 or newer
 tmux -V                  # macOS: brew install tmux · Ubuntu: sudo apt install tmux
-claude --version         # und/oder: codex --version
+claude --version         # and/or: codex --version
 ```
 
-Dein `claude` bzw. `codex` muss **eingeloggt** sein: einmal `claude` starten und `/login` – bzw. `codex login`.
+Your `claude` or `codex` must be **logged in**: start `claude` once and run `/login` – or `codex login`.
 
-### 1.2 Omnigent installieren
+### 1.2 Install Omnigent
 
 ```bash
 curl -fsSL https://omnigent.ai/install.sh | sh
 ```
 
-Danach ein **neues Terminal** öffnen und prüfen:
+Then open a **new terminal** and check:
 
 ```bash
 omni --version
 ```
 
-`omni` und `omnigent` sind derselbe Befehl.
+`omni` and `omnigent` are the same command.
 
-### 1.3 Dein Agent als Omnigent-Session
+### 1.3 Your agent as an Omnigent session
 
 ```bash
 cd omnigent-workshop/demo-app
-omni claude              # oder: omni codex
+omni claude              # or: omni codex
 ```
 
-Beim ersten Start fragt Omnigent ggf. nach deinem Anbieter – wähle dein Abo.
+On first start, Omnigent may ask for your provider – pick your subscription.
 
-1. Schreib im Terminal: *„Erklär mir in 3 Sätzen, was dieses Repo macht, und lass die Tests laufen.“*
-2. Öffne im Browser **http://localhost:6767** – dort ist **dieselbe Session**.
-3. Schreib im Browser: *„Welche MwSt.-Sätze kennt die Kasse?“* – die Antwort erscheint auch im Terminal.
+1. In the terminal, type: *"Explain in 3 sentences what this repo does, and run the tests."*
+2. Open **http://localhost:6767** in your browser – it shows **the same session**.
+3. In the browser, type: *"Which VAT rates does the checkout know?"* – the answer also appears in the terminal.
 
-✅ **Geschafft, wenn:** du eine Nachricht im Browser schickst und sie im Terminal ankommt.
+✅ **Done when:** you send a message from the browser and it arrives in the terminal.
 
-### Wenn es hakt
+### If you get stuck
 
-| Problem | Lösung |
+| Problem | Fix |
 |---|---|
-| `tmux` fehlt | `brew install tmux` bzw. `sudo apt install tmux` |
-| Linux: Terminal startet nicht (bwrap) | `sudo apt install bubblewrap` |
-| „Not logged in“ | `claude` starten → `/login` bzw. `codex login` |
-| Windows | `omni claude` geht dort nicht. Nimm `omnigent run --harness claude-sdk` (oder `--harness codex`) – Übung 2 funktioniert normal |
-| `omni` nicht gefunden | neues Terminal öffnen; sonst `~/.local/bin` in den `PATH` |
-| Installer bricht bei der Databricks-CLI ab oder lädt sehr lange | ohne Databricks installieren: `curl -fsSL https://omnigent.ai/install.sh \| sh -s -- --no-databricks` |
+| `tmux` missing | `brew install tmux` or `sudo apt install tmux` |
+| Linux: terminal does not start (bwrap) | `sudo apt install bubblewrap` |
+| "Not logged in" | start `claude` → `/login`, or `codex login` |
+| Windows | `omni claude` does not work there. Use `omnigent run --harness claude-sdk` (or `--harness codex`) – exercise 2 works normally |
+| `omni` not found | open a new terminal; otherwise add `~/.local/bin` to your `PATH` |
+| Installer fails at the Databricks CLI or downloads forever | install without Databricks: `curl -fsSL https://omnigent.ai/install.sh \| sh -s -- --no-databricks` |
 
 ---
 
-## Übung 2 – Eigener Agent mit eigenem Skill (25 Min)
+## Exercise 2 – Your own agent with its own skill (25 min)
 
-**Die Idee:** Ein Agent ist ein Ordner. Seine Skills liegen **im selben Ordner** – nicht im globalen
-`~/.claude/skills`. Damit sind Agent und Skills zusammen versioniert, teilbar und unabhängig davon,
-was auf deinem Rechner sonst installiert ist.
+**The idea:** An agent is a folder. Its skills live **in the same folder** – not in the global
+`~/.claude/skills`. So agent and skills are versioned together, shareable, and independent of
+whatever else is installed on your machine.
 
 ```
-agenten/kassen-agent/
-├── config.yaml                    ← Prompt, Harness, Rechte
+checkout-agent/
+├── config.yaml                      ← prompt, harness, permissions
 └── skills/
-    └── kassen-check/SKILL.md      ← wird automatisch gefunden
+    └── checkout-check/SKILL.md      ← discovered automatically
 ```
 
-Alle Befehle im Ordner `demo-app/`.
+Run all commands inside `demo-app/`.
 
-### 2.1 Harness wählen
+### 2.1 Pick a harness
 
-Öffne `agenten/kassen-agent/config.yaml` und erledige **TODO 1**: `claude-sdk` oder `codex`.
+Open `checkout-agent/config.yaml` and do **TODO 1**: `claude-sdk` or `codex`.
 
-### 2.2 Skill anlegen
+### 2.2 Create a skill
 
-Lege die Datei `agenten/kassen-agent/skills/kassen-check/SKILL.md` an (**TODO 2**):
+Create the file `checkout-agent/skills/checkout-check/SKILL.md` (**TODO 2**):
 
 ````markdown
 ---
-name: kassen-check
-description: Prüft den Code der Mini-Kasse auf die Hausregeln (Integer-Cent, Rundung, Tests). Verwenden, wenn nach einem Kassen-Check, einer Code-Prüfung der Kasse oder den Hausregeln gefragt wird.
+name: checkout-check
+description: Checks the mini checkout code against the house rules (integer cents, rounding, tests). Use when asked for a checkout check, a code check of the checkout, or the house rules.
 ---
 
-# kassen-check
+# checkout-check
 
-Prüfe die Mini-Kasse gegen unsere drei Hausregeln. Ändere dabei nichts.
+Check the mini checkout against our three house rules. Do not change anything.
 
-1. **Integer-Cent:** Lies `kasse/pricing.py`. Alle Beträge müssen `int` in Cent sein.
-2. **Rundung:** Gerundet wird ausschließlich über `round_half_up_div`.
-   (Das `//` in `format_eur` trennt nur Euro und Cent für die Anzeige – erlaubt.)
-3. **Tests:** Führe `python3 -m unittest -q` aus.
+1. **Integer cents:** Read `checkout/pricing.py`. All amounts must be `int` in cents.
+2. **Rounding:** Rounding happens only via `round_half_up_div`.
+   (The `//` in `format_eur` only splits euros and cents for display – allowed.)
+3. **Tests:** Run `python3 -m unittest -q`.
 
-Antworte GENAU in diesem Format:
+Answer EXACTLY in this format:
 
 ```
-KASSEN-CHECK
-Integer-Cent:  ✅ | ❌  <Beleg mit Datei:Zeile>
-Rundung:       ✅ | ❌  <Beleg mit Datei:Zeile>
-Tests:         ✅ | ❌  <Anzahl Tests, Ergebnis>
-Fazit:         <ein Satz>
+CHECKOUT-CHECK
+Integer cents:  ✅ | ❌  <evidence with file:line>
+Rounding:       ✅ | ❌  <evidence with file:line>
+Tests:          ✅ | ❌  <number of tests, result>
+Verdict:        <one sentence>
 ```
 ````
 
-Die `description` ist wichtig: Daran erkennt der Agent, **wann** er den Skill nimmt.
+The `description` matters: it is how the agent knows **when** to use the skill.
 
-### 2.3 Agent starten
+### 2.3 Start the agent
 
 ```bash
-omni run agenten/kassen-agent
+omni run checkout-agent
 ```
 
-Frag: *„Welche Skills stehen dir zur Verfügung? Nenne Namen und Anzahl.“*
-Du siehst `kassen-check` – und dazu **alle deine globalen Skills**, falls du welche hast.
+Ask: *"Which skills are available to you? Give names and count."*
+You see `checkout-check` – plus **all your global skills**, if you have any.
 
-### 2.4 Nur die eigenen Skills
+### 2.4 Only its own skills
 
-Beende den Agent, erledige **TODO 3** (`skills: none` einkommentieren), starte neu und frag noch einmal.
-Mit **Claude** kennt der Agent jetzt **nur noch** `kassen-check`.
+Stop the agent, do **TODO 3** (uncomment `skills: none`), restart and ask again.
+With **Claude**, the agent now knows **only** `checkout-check`.
 
-> **Codex:** In unserem Test (Omnigent 0.22) hat `skills: none` bei Codex die globalen Skills **nicht** ausgeblendet.
-> Dein eigener Skill funktioniert trotzdem – die Isolation zeigst du am besten mit Claude.
+> **Codex:** In our test (Omnigent 0.22), `skills: none` did **not** hide the global skills for Codex.
+> Your own skill still works – the isolation is best shown with Claude.
 
-### 2.5 Skill benutzen
+### 2.5 Use the skill
 
-*„Mach einen Kassen-Check.“* – die Antwort kommt im `KASSEN-CHECK`-Format: Der Agent hat deinen Skill benutzt.
+*"Do a checkout check."* – the answer comes in the `CHECKOUT-CHECK` format: the agent used your skill.
 
-✅ **Geschafft, wenn:** der Agent im `KASSEN-CHECK`-Format antwortet – und (mit Claude) nur `kassen-check` kennt.
+✅ **Done when:** the agent answers in the `CHECKOUT-CHECK` format – and (with Claude) knows only `checkout-check`.
 
-> **Gut zu wissen**
-> - `skills:` im YAML steuert nur die **globalen** Skills (`all` = Standard, `none` = keine, oder eine Liste von Namen). Die eigenen aus `./skills/` werden **immer** geladen – bei Claude und bei Codex.
-> - Änderungen an YAML oder Skills wirken erst nach einem **Neustart** von `omni run`.
-> - Mit Claude lädt `skills: none` auch deine persönlichen Claude-Einstellungen und MCP-Server nicht mit.
+> **Good to know**
+> - `skills:` in the YAML only controls the **global** skills (`all` = default, `none` = none, or a list of names). Your own skills from `./skills/` are **always** loaded – with Claude and with Codex.
+> - Changes to the YAML or skills only take effect after **restarting** `omni run`.
+> - With Claude, `skills: none` also skips your personal Claude settings and MCP servers.
 
-**Lösung:** `omni run ../loesungen/uebung-2/kassen-agent`
+**Solution:** `omni run ../solutions/exercise-2/checkout-agent`
 
 ---
 
-## Übung 3 – Bonus (für Schnelle)
+## Exercise 3 – Bonus (for fast finishers)
 
-Nimm die Lösung aus Übung 2 als Basis oder schau direkt in `../loesungen/uebung-3/kassen-agent/`.
+Take the exercise 2 solution as a base, or look straight into `../solutions/exercise-3/checkout-agent/`.
 
-### 3a – Policy: Regeln, die das Modell nicht überreden kann
+### 3a – Policy: rules the model cannot talk its way around
 
-Ergänze in `config.yaml`:
+Add to `config.yaml`:
 
 ```yaml
 guardrails:
   policies:
-    nur_lesen:
+    read_only:
       type: function
       on: [tool_call]
       function:
         path: omnigent.policies.builtins.orchestration.read_only_os
 ```
 
-Neu starten, dann: *„Leg die Datei notiz.txt an.“* → `Denied by policy`.
+Restart, then: *"Create the file note.txt."* → `Denied by policy`.
 
-> ⚠️ In einem Agent-Ordner gehören Policies unter `guardrails: policies:`. Ein Block `policies:` auf oberster Ebene wird **ohne Fehlermeldung ignoriert**.
+> ⚠️ In an agent folder, policies belong under `guardrails: policies:`. A top-level `policies:` block is **ignored without any error**.
 
-### 3b – Sub-Agent mit eigenem Skill
+### 3b – Sub-agent with its own skill
 
-Lege einen Reviewer an, der **eigene** Skills hat, die der Haupt-Agent nicht sieht:
+Add a reviewer that has **its own** skills which the main agent does not see:
 
 ```
-kassen-agent/
+checkout-agent/
 ├── config.yaml                          ← + tools: agents: [reviewer]
-├── skills/kassen-check/SKILL.md
+├── skills/checkout-check/SKILL.md
 └── agents/reviewer/
     ├── config.yaml
-    └── skills/test-luecken/SKILL.md     ← nur für den Reviewer
+    └── skills/test-gaps/SKILL.md        ← only for the reviewer
 ```
 
-Vorlage: `../loesungen/uebung-3/kassen-agent/`. Dann: *„Lass deinen Reviewer die Testlücken finden.“*
+Template: `../solutions/exercise-3/checkout-agent/`. Then: *"Have your reviewer find the test gaps."*
 
-### 3c – Zweiter Anbieter (wer beide Abos hat)
+### 3c – Second vendor (if you have both subscriptions)
 
-Stell im Reviewer `harness: codex` ein (oder umgekehrt). Jetzt prüft ein **anderes Modell** die Arbeit –
-eine Zeile YAML.
+Set `harness: codex` in the reviewer (or the other way round). Now a **different model** checks the
+work – one line of YAML.
 
-**Lösung:** `omni run ../loesungen/uebung-3/kassen-agent`
+**Solution:** `omni run ../solutions/exercise-3/checkout-agent`
 
 ---
 
-## Weiterlesen
+## Further reading
 
 - Website: https://omnigent.ai
-- Repo und Beispiele (polly, debby, scribe, sentinel): https://github.com/omnigent-ai/omnigent/tree/main/examples
-- Agent-YAML-Referenz: https://github.com/omnigent-ai/omnigent/blob/main/docs/AGENT_YAML_SPEC.md
-- Policy-Katalog: https://github.com/omnigent-ai/omnigent/blob/main/docs/POLICIES.md
+- Repo and examples (polly, debby, scribe, sentinel): https://github.com/omnigent-ai/omnigent/tree/main/examples
+- Agent YAML reference: https://github.com/omnigent-ai/omnigent/blob/main/docs/AGENT_YAML_SPEC.md
+- Policy catalog: https://github.com/omnigent-ai/omnigent/blob/main/docs/POLICIES.md

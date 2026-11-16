@@ -1,9 +1,9 @@
-# kasse
+# checkout
 
-Winzige Preisberechnung (Netto, MwSt., Brutto in Integer-Cent) als Spielwiese fuer den Omnigent-Workshop.
+Tiny price calculation (net, VAT, gross in integer cents) as a playground for the Omnigent workshop.
 
 ```bash
 python3 -m unittest -v
 ```
 
-Offenes Ticket: [TICKET.md](TICKET.md)
+Open ticket: [TICKET.md](TICKET.md)
