@@ -1,13 +1,13 @@
 # Exercise 2 – your own agent
 #
 # Start it (inside demo-app/):
-#   omni run checkout-agent
+#   omni run shop-agent
 #
 # Your tasks are the TODOs in this file and in the README.
 
 spec_version: 1
-name: checkout-agent
-description: Helps working on the mini checkout and brings its own skills.
+name: shop-agent
+description: Helps running the Agent Supply demo shop and brings its own skills.
 
 executor:
   type: omnigent
@@ -21,7 +21,7 @@ executor:
 # skills: none
 
 prompt: |
-  You are the checkout agent for the mini checkout in this repo.
+  You are the shop agent for the Agent Supply demo shop in this repo.
   Answer concisely, in the language the user writes in.
   If a task matches one of your skills, load the skill and follow it.
 
@@ -34,6 +34,6 @@ os_env:
     type: none
 
 # TODO 2: Create your first skill:
-#   checkout-agent/skills/checkout-check/SKILL.md
+#   shop-agent/skills/add-product/SKILL.md
 # Template: see README, exercise 2. No entry in this YAML is needed –
 # everything under ./skills/<name>/SKILL.md is discovered automatically.

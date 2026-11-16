@@ -1,0 +1,45 @@
+# Solution exercise 3 – sub-agent with its own skill + policy
+#
+# Start it (inside demo-app/):
+#   omni run ../solutions/exercise-3/shop-agent
+#
+# Folder layout:
+#   shop-agent/
+#   ├── config.yaml                          ← this agent
+#   ├── skills/add-product/SKILL.md          ← skill ONLY for this agent
+#   └── agents/reviewer/
+#       ├── config.yaml                      ← sub-agent (read-only via policy)
+#       └── skills/a11y-check/SKILL.md       ← skill ONLY for the reviewer
+
+spec_version: 1
+name: shop-agent
+description: Shop agent with a read-only accessibility reviewer as sub-agent.
+
+executor:
+  type: omnigent
+  config:
+    harness: claude-sdk        # or: codex
+
+skills: none
+
+prompt: |
+  You are the shop agent for the Agent Supply demo shop in this repo.
+  Answer concisely, in the language the user writes in.
+  If a task matches one of your skills, load the skill and follow it.
+
+  You have a sub-agent `reviewer`. It reviews the shop for accessibility and
+  has its own skills for that, which you do not have. When asked for an
+  accessibility, a11y or WCAG review, delegate to it with `sys_session_send`
+  (agent: "reviewer") and relay its result. When the user explicitly asks the
+  reviewer itself to change files, pass that request on to the reviewer
+  unchanged and report exactly what it answered.
+
+os_env:
+  type: caller_process
+  cwd: .
+  sandbox:
+    type: none
+
+tools:
+  agents:
+    - reviewer

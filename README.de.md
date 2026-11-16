@@ -7,24 +7,27 @@ git clone https://github.com/ifahrentholz/omnigent-workshop.git
 cd omnigent-workshop
 ```
 
-Drei Übungen, ca. 50 Minuten. Du arbeitest mit deinem eigenen **Claude-Code-** oder **Codex-Abo**.
-Wo `claude` steht, geht auch `codex`. Code und Beispiele im Repo sind auf Englisch.
+Drei Übungen, ca. 50 Minuten. Du arbeitest mit deinem eigenen **Claude-Code-** oder **Codex-Abo**
+an **Agent Supply**, einem kleinen Demo-Shop im Browser – jede Änderung deines Agents siehst du dort
+sofort. Wo `claude` steht, geht auch `codex`. Code und Beispiele im Repo sind auf Englisch.
 
 | Übung | Was du am Ende hast | Zeit |
 |---|---|---|
-| 1 | Omnigent läuft, dein Claude Code / Codex als Session im Terminal **und** im Browser | 25 Min |
+| 1 | Omnigent läuft; dein Agent ändert den Shop – aus dem Terminal **und** aus dem Browser | 25 Min |
 | 2 | Ein eigener Agent in YAML mit **eigenem Skill** – unabhängig von deinen globalen Skills | 25 Min |
-| 3 | Bonus: Policy, Sub-Agent mit eigenem Skill, zweiter Anbieter | für Schnelle |
+| 3 | Bonus: Sub-Agent mit eigenem Skill, Policy, zweiter Anbieter | für Schnelle |
 
 ```
 omnigent-workshop/
-├── demo-app/                       ← hier arbeitest du (Mini-Kasse in Python)
-│   ├── checkout/pricing.py
-│   ├── tests/
-│   └── checkout-agent/             ← Übung 2: dein Agent (Starter mit TODOs)
+├── demo-app/                       ← der Shop – hier arbeitest du
+│   ├── server.js                   ← node server.js → http://localhost:3000
+│   ├── public/                     ← index.html, app.js, cart.js, style.css
+│   ├── data/products.json          ← Mock-Produkte
+│   ├── tests/                      ← node --test
+│   └── shop-agent/                 ← Übung 2: dein Agent (Starter mit TODOs)
 └── solutions/                      ← zum Spicken oder Aufholen
-    ├── exercise-2/checkout-agent/
-    └── exercise-3/checkout-agent/
+    ├── exercise-2/shop-agent/
+    └── exercise-3/shop-agent/
 ```
 
 ---
@@ -35,8 +38,7 @@ omnigent-workshop/
 
 ```bash
 git --version
-python3 --version        # 3.10 oder neuer (für die Tests der Demo-App)
-node --version           # 22 oder neuer
+node --version           # 22 oder neuer – für den Shop und Omnigents Agent-CLIs
 tmux -V                  # macOS: brew install tmux · Ubuntu: sudo apt install tmux
 claude --version         # und/oder: codex --version
 ```
@@ -57,7 +59,21 @@ omni --version
 
 `omni` und `omnigent` sind derselbe Befehl.
 
-### 1.3 Dein Agent als Omnigent-Session
+### 1.3 Den Shop starten
+
+In **Terminal 1**:
+
+```bash
+cd omnigent-workshop/demo-app
+node server.js
+```
+
+Öffne **http://localhost:3000** – das ist Agent Supply. Lass das Terminal laufen: Der Shop
+**lädt sich selbst neu**, sobald sich eine Datei ändert.
+
+### 1.4 Dein Agent als Omnigent-Session
+
+In **Terminal 2**:
 
 ```bash
 cd omnigent-workshop/demo-app
@@ -66,11 +82,15 @@ omni claude              # oder: omni codex
 
 Beim ersten Start fragt Omnigent ggf. nach deinem Anbieter – wähle dein Abo.
 
-1. Schreib im Terminal: *„Erklär mir in 3 Sätzen, was dieses Repo macht, und lass die Tests laufen.“*
-2. Öffne im Browser **http://localhost:6767** – dort ist **dieselbe Session**.
-3. Schreib im Browser: *„Welche MwSt.-Sätze kennt die Kasse?“* – die Antwort erscheint auch im Terminal.
+1. Schreib im Terminal: *„Zeig bei Produkten mit Bestand 0 ein ‚Sold out‘-Badge und deaktiviere ihren ‚Add to cart‘-Button.“*
+   Schau in den Shop: Die „Sandbox cap“ ist jetzt ausverkauft.
+2. Öffne **http://localhost:6767** in einem zweiten Browser-Tab – dort ist **dieselbe Session**.
+3. Schreib in diesem Tab: *„Füg im Header einen Dark-Mode-Schalter hinzu.“* – die Antwort erscheint
+   auch im Terminal, und der Shop bekommt einen Dark Mode.
 
-✅ **Geschafft, wenn:** du eine Nachricht im Browser schickst und sie im Terminal ankommt.
+✅ **Geschafft, wenn:** eine Änderung, die du im Browser beauftragt hast, im Shop zu sehen ist.
+
+Den ursprünglichen Shop zurück? `git restore .` im Ordner `demo-app/`.
 
 ### Wenn es hakt
 
@@ -79,6 +99,7 @@ Beim ersten Start fragt Omnigent ggf. nach deinem Anbieter – wähle dein Abo.
 | `tmux` fehlt | `brew install tmux` bzw. `sudo apt install tmux` |
 | Linux: Terminal startet nicht (bwrap) | `sudo apt install bubblewrap` |
 | „Not logged in“ | `claude` starten → `/login` bzw. `codex login` |
+| Port 3000 ist belegt | `PORT=4000 node server.js` und http://localhost:4000 öffnen |
 | Windows | `omni claude` geht dort nicht. Nimm `omnigent run --harness claude-sdk` (oder `--harness codex`) – Übung 2 funktioniert normal |
 | `omni` nicht gefunden | neues Terminal öffnen; sonst `~/.local/bin` in den `PATH` |
 | Installer bricht bei der Databricks-CLI ab oder lädt sehr lange | ohne Databricks installieren: `curl -fsSL https://omnigent.ai/install.sh \| sh -s -- --no-databricks` |
@@ -92,45 +113,55 @@ Beim ersten Start fragt Omnigent ggf. nach deinem Anbieter – wähle dein Abo.
 was auf deinem Rechner sonst installiert ist.
 
 ```
-checkout-agent/
-├── config.yaml                      ← Prompt, Harness, Rechte
+shop-agent/
+├── config.yaml                    ← Prompt, Harness, Rechte
 └── skills/
-    └── checkout-check/SKILL.md      ← wird automatisch gefunden
+    └── add-product/SKILL.md       ← wird automatisch gefunden
 ```
 
-Alle Befehle im Ordner `demo-app/`.
+Alle Befehle im Ordner `demo-app/` – und der Shop läuft weiter in Terminal 1.
 
 ### 2.1 Harness wählen
 
-Öffne `checkout-agent/config.yaml` und erledige **TODO 1**: `claude-sdk` oder `codex`.
+Öffne `shop-agent/config.yaml` und erledige **TODO 1**: `claude-sdk` oder `codex`.
 
 ### 2.2 Skill anlegen
 
-Lege die Datei `checkout-agent/skills/checkout-check/SKILL.md` an (**TODO 2**):
+Lege die Datei `shop-agent/skills/add-product/SKILL.md` an (**TODO 2**):
 
 ````markdown
 ---
-name: checkout-check
-description: Checks the mini checkout code against the house rules (integer cents, rounding, tests). Use when asked for a checkout check, a code check of the checkout, or the house rules.
+name: add-product
+description: Adds new products to the Agent Supply shop following the house rules. Use when asked to add, create or stock new products in the shop.
 ---
 
-# checkout-check
+# add-product
 
-Check the mini checkout against our three house rules. Do not change anything.
+Add the requested products to `data/products.json` (append at the end, keep the
+2-space indentation). Do not change existing products.
 
-1. **Integer cents:** Read `checkout/pricing.py`. All amounts must be `int` in cents.
-2. **Rounding:** Rounding happens only via `round_half_up_div`.
-   (The `//` in `format_eur` only splits euros and cents for display – allowed.)
-3. **Tests:** Run `python3 -m unittest -q`.
+House rules for every new product:
+
+| Field | Rule |
+|---|---|
+| `id` | `<category>-<name-in-kebab-case>`, unique |
+| `category` | one of `stickers`, `mugs`, `apparel`, `books`, `stationery` – never invent a new one |
+| `name` | short, English |
+| `description` | English, at most 100 characters |
+| `price_cents` | whole cents, e.g. `2490` = €24.90 |
+| `vat` | `"reduced"` for books, otherwise `"standard"` |
+| `stock` | whole number ≥ 0, default `25` |
+| `color` | one of `#1B31FF` `#081235` `#9C73F3` `#A7FF71` `#F2A541` `#E4572E` |
+
+Then run `node --test`. `tests/products.test.js` checks these rules – fix the data until all tests pass.
 
 Answer EXACTLY in this format:
 
 ```
-CHECKOUT-CHECK
-Integer cents:  ✅ | ❌  <evidence with file:line>
-Rounding:       ✅ | ❌  <evidence with file:line>
-Tests:          ✅ | ❌  <number of tests, result>
-Verdict:        <one sentence>
+PRODUCT ADDED
+<id> · <name> · <price as €0.00> · stock <n>
+Tests: ✅ <n> passed | ❌ <what failed>
+Open http://localhost:3000 – the shop reloads by itself.
 ```
 ````
 
@@ -139,42 +170,58 @@ Die `description` ist wichtig: Daran erkennt der Agent, **wann** er den Skill ni
 ### 2.3 Agent starten
 
 ```bash
-omni run checkout-agent
+omni run shop-agent
 ```
 
 Frag: *„Welche Skills stehen dir zur Verfügung? Nenne Namen und Anzahl.“*
-Du siehst `checkout-check` – und dazu **alle deine globalen Skills**, falls du welche hast.
+Du siehst `add-product` – und dazu **alle deine globalen Skills**, falls du welche hast.
 
 ### 2.4 Nur die eigenen Skills
 
 Beende den Agent, erledige **TODO 3** (`skills: none` einkommentieren), starte neu und frag noch einmal.
-Mit **Claude** kennt der Agent jetzt **nur noch** `checkout-check`.
+Mit **Claude** kennt der Agent jetzt **nur noch** `add-product`.
 
 > **Codex:** In unserem Test (Omnigent 0.22) hat `skills: none` bei Codex die globalen Skills **nicht** ausgeblendet.
 > Dein eigener Skill funktioniert trotzdem – die Isolation zeigst du am besten mit Claude.
 
 ### 2.5 Skill benutzen
 
-*„Mach einen Checkout-Check.“* – die Antwort kommt im `CHECKOUT-CHECK`-Format: Der Agent hat deinen Skill benutzt.
+*„Füg drei Wintermützen in verschiedenen Farben hinzu.“* – die Antwort kommt im `PRODUCT ADDED`-Format,
+und die Mützen erscheinen im Shop.
 
-✅ **Geschafft, wenn:** der Agent im `CHECKOUT-CHECK`-Format antwortet – und (mit Claude) nur `checkout-check` kennt.
+✅ **Geschafft, wenn:** neue Produkte im Shop auftauchen – und (mit Claude) der Agent nur `add-product` kennt.
 
 > **Gut zu wissen**
 > - `skills:` im YAML steuert nur die **globalen** Skills (`all` = Standard, `none` = keine, oder eine Liste von Namen). Die eigenen aus `./skills/` werden **immer** geladen – bei Claude und bei Codex.
 > - Änderungen an YAML oder Skills wirken erst nach einem **Neustart** von `omni run`.
 > - Mit Claude lädt `skills: none` auch deine persönlichen Claude-Einstellungen und MCP-Server nicht mit.
 
-**Lösung:** `omni run ../solutions/exercise-2/checkout-agent`
+**Lösung:** `omni run ../solutions/exercise-2/shop-agent`
 
 ---
 
 ## Übung 3 – Bonus (für Schnelle)
 
-Nimm die Lösung aus Übung 2 als Basis oder schau direkt in `../solutions/exercise-3/checkout-agent/`.
+Nimm die Lösung aus Übung 2 als Basis oder schau direkt in `../solutions/exercise-3/shop-agent/`.
 
-### 3a – Policy: Regeln, die das Modell nicht überreden kann
+### 3a – Sub-Agent mit eigenem Skill
 
-Ergänze in `config.yaml`:
+Lege einen Reviewer an, der einen **eigenen** Skill hat, den der Haupt-Agent nicht sieht:
+
+```
+shop-agent/
+├── config.yaml                          ← + tools: agents: [reviewer]
+├── skills/add-product/SKILL.md
+└── agents/reviewer/
+    ├── config.yaml
+    └── skills/a11y-check/SKILL.md       ← nur für den Reviewer
+```
+
+Vorlage: `../solutions/exercise-3/shop-agent/`. Dann: *„Lass deinen Reviewer den Shop auf Barrierefreiheit prüfen.“*
+
+### 3b – Policy: Regeln, die das Modell nicht überreden kann
+
+Mach den Reviewer schreibgeschützt – ergänze in `agents/reviewer/config.yaml`:
 
 ```yaml
 guardrails:
@@ -186,31 +233,16 @@ guardrails:
         path: omnigent.policies.builtins.orchestration.read_only_os
 ```
 
-Neu starten, dann: *„Leg die Datei note.txt an.“* → `Denied by policy`.
+Neu starten, dann: *„Bitte den Reviewer, Befund 1 selbst zu beheben.“* → `Denied by policy`.
 
 > ⚠️ In einem Agent-Ordner gehören Policies unter `guardrails: policies:`. Ein Block `policies:` auf oberster Ebene wird **ohne Fehlermeldung ignoriert**.
-
-### 3b – Sub-Agent mit eigenem Skill
-
-Lege einen Reviewer an, der **eigene** Skills hat, die der Haupt-Agent nicht sieht:
-
-```
-checkout-agent/
-├── config.yaml                          ← + tools: agents: [reviewer]
-├── skills/checkout-check/SKILL.md
-└── agents/reviewer/
-    ├── config.yaml
-    └── skills/test-gaps/SKILL.md        ← nur für den Reviewer
-```
-
-Vorlage: `../solutions/exercise-3/checkout-agent/`. Dann: *„Lass deinen Reviewer die Testlücken finden.“*
 
 ### 3c – Zweiter Anbieter (wer beide Abos hat)
 
 Stell im Reviewer `harness: codex` ein (oder umgekehrt). Jetzt prüft ein **anderes Modell** die Arbeit –
 eine Zeile YAML.
 
-**Lösung:** `omni run ../solutions/exercise-3/checkout-agent`
+**Lösung:** `omni run ../solutions/exercise-3/shop-agent`
 
 ---
 

@@ -1,6 +1,6 @@
 spec_version: 1
 name: reviewer
-description: Finds test gaps in the mini checkout. Reads only, never changes anything.
+description: Reviews the Agent Supply shop for accessibility. Reads only, never changes anything.
 
 executor:
   type: omnigent
@@ -11,9 +11,11 @@ executor:
 skills: none
 
 prompt: |
-  You are a strict test reviewer for the mini checkout.
-  Answer concisely, in the language the request is written in. You never change files.
+  You are a strict accessibility reviewer for the Agent Supply demo shop.
+  Answer concisely, in the language the request is written in.
   If a task matches one of your skills, load the skill and follow it.
+  If you are asked to fix something, try it with your file tools and report
+  exactly what happened.
 
 os_env:
   type: caller_process
@@ -21,6 +23,8 @@ os_env:
   sandbox:
     type: none
 
+# Exercise 3b: this policy makes the reviewer read-only. Write and edit tools
+# are denied before they run – no matter what the prompt or the user says.
 guardrails:
   policies:
     read_only:

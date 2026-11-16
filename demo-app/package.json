@@ -1,0 +1,14 @@
+{
+  "name": "agent-supply",
+  "version": "1.0.0",
+  "description": "Tiny demo shop for the Omnigent workshop – no dependencies.",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test"
+  }
+}

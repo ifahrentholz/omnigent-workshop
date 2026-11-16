@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Agent Supply – merch for people who ship with agents</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">AS</span>
+        <div>
+          <h1>Agent Supply</h1>
+          <p class="tagline">Merch for people who ship with agents.</p>
+        </div>
+      </div>
+      <a class="cart-link" href="#cart">Cart (<span id="cart-count">0</span>)</a>
+    </header>
+
+    <main class="layout">
+      <section class="catalog" aria-labelledby="catalog-title">
+        <h2 id="catalog-title" class="visually-hidden">Products</h2>
+
+        <div class="toolbar">
+          <input id="search" type="search" placeholder="Search products…" />
+
+          <label class="field">
+            <span>Category</span>
+            <select id="category">
+              <option value="">All</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Sort by</span>
+            <select id="sort">
+              <option value="name">Name</option>
+              <option value="price-asc">Price: low to high</option>
+              <option value="price-desc">Price: high to low</option>
+            </select>
+          </label>
+        </div>
+
+        <p id="result-count" class="result-count" aria-live="polite"></p>
+        <ul id="products" class="product-grid"></ul>
+      </section>
+
+      <aside id="cart" class="cart" aria-labelledby="cart-title">
+        <h2 id="cart-title">Your cart</h2>
+        <ul id="cart-lines" class="cart-lines"></ul>
+        <p id="cart-empty" class="cart-empty">Your cart is empty.</p>
+
+        <dl id="cart-totals" class="cart-totals" hidden>
+          <div><dt>Subtotal</dt><dd id="total-net"></dd></div>
+          <div><dt>VAT</dt><dd id="total-vat"></dd></div>
+          <div class="grand"><dt>Total</dt><dd id="total-gross"></dd></div>
+        </dl>
+
+        <form id="checkout" class="checkout" hidden>
+          <h3>Checkout</h3>
+          <label class="field">
+            <span>Name</span>
+            <input id="customer-name" name="name" autocomplete="name" required />
+          </label>
+          <label class="field">
+            <span>Email</span>
+            <input id="customer-email" name="email" type="email" autocomplete="email" required />
+          </label>
+          <button type="submit" class="button primary">Place order</button>
+          <p id="checkout-message" class="message" role="status"></p>
+        </form>
+      </aside>
+    </main>
+
+    <footer class="site-footer">
+      <p>Demo shop for the Omnigent workshop. Mock data only – nothing is really sold.</p>
+    </footer>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

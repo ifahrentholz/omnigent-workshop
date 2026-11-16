@@ -1,0 +1,102 @@
+[
+  {
+    "id": "stickers-omnigent-logo",
+    "name": "Omnigent logo sticker",
+    "category": "stickers",
+    "description": "Die-cut vinyl sticker for your laptop lid.",
+    "price_cents": 300,
+    "vat": "standard",
+    "stock": 120,
+    "color": "#1B31FF"
+  },
+  {
+    "id": "stickers-skill-pack",
+    "name": "Skill pack sticker set",
+    "category": "stickers",
+    "description": "Five stickers, one for every skill your agent should have.",
+    "price_cents": 600,
+    "vat": "standard",
+    "stock": 80,
+    "color": "#9C73F3"
+  },
+  {
+    "id": "mugs-denied-by-policy",
+    "name": "“Denied by policy” mug",
+    "category": "mugs",
+    "description": "For the coffee your agent is not allowed to spill.",
+    "price_cents": 1400,
+    "vat": "standard",
+    "stock": 35,
+    "color": "#081235"
+  },
+  {
+    "id": "mugs-agent-fuel",
+    "name": "Agent fuel mug",
+    "category": "mugs",
+    "description": "Holds 350 ml – enough for one long-running session.",
+    "price_cents": 1200,
+    "vat": "standard",
+    "stock": 40,
+    "color": "#F2A541"
+  },
+  {
+    "id": "apparel-meta-harness-hoodie",
+    "name": "Meta-harness hoodie",
+    "category": "apparel",
+    "description": "Heavy cotton hoodie with the one-harness-for-all print.",
+    "price_cents": 4900,
+    "vat": "standard",
+    "stock": 12,
+    "color": "#081235"
+  },
+  {
+    "id": "apparel-one-harness-tee",
+    "name": "One harness tee",
+    "category": "apparel",
+    "description": "Organic cotton T-shirt, unisex fit.",
+    "price_cents": 2400,
+    "vat": "standard",
+    "stock": 25,
+    "color": "#1B31FF"
+  },
+  {
+    "id": "apparel-sandbox-cap",
+    "name": "Sandbox cap",
+    "category": "apparel",
+    "description": "Keeps the sun out – like a good sandbox.",
+    "price_cents": 1900,
+    "vat": "standard",
+    "stock": 0,
+    "color": "#E4572E"
+  },
+  {
+    "id": "books-prompt-pocket-guide",
+    "name": "Prompt pocket guide",
+    "category": "books",
+    "description": "Sixty pages of prompts that actually work.",
+    "price_cents": 1500,
+    "vat": "reduced",
+    "stock": 50,
+    "color": "#A7FF71"
+  },
+  {
+    "id": "books-agent-patterns",
+    "name": "Agent patterns handbook",
+    "category": "books",
+    "description": "Orchestrators, reviewers and policies explained with examples.",
+    "price_cents": 3200,
+    "vat": "reduced",
+    "stock": 18,
+    "color": "#9C73F3"
+  },
+  {
+    "id": "stationery-yaml-notebook",
+    "name": "YAML notebook",
+    "category": "stationery",
+    "description": "Dotted A5 notebook. Indentation guides included.",
+    "price_cents": 900,
+    "vat": "standard",
+    "stock": 60,
+    "color": "#F2A541"
+  }
+]
