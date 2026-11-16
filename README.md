@@ -2,6 +2,8 @@
 
 🇬🇧 English · [🇩🇪 Deutsch](README.de.md)
 
+**Slides:** [English](https://claude.ai/artifact/GbLbKgj5mgVK5GMTGuSUuz) · [Deutsch](https://claude.ai/artifact/PTZU8djcU6kgo5LiLBW3Ap)
+
 ```bash
 git clone https://github.com/ifahrentholz/omnigent-workshop.git
 cd omnigent-workshop
